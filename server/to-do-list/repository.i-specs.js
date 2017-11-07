@@ -273,9 +273,8 @@ describe('toDoListRepository', () => {
     })
 
     it('should NOT delete the other item', () => {
-        return Item.findOne({'_id':item2Id}).then(item => {
-           expect(item.name).to.eql(item2Name)
-        })
+        expect(savedList.items.length).to.equal(1)
+        expect(savedList.items[0]._id).to.eql(item2Id)
     })
   })
 
