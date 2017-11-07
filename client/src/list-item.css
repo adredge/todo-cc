@@ -1,0 +1,41 @@
+.item {
+    background-color: #D3D3D3;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 31px;
+}
+
+.itemContent{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.listCheckbox {
+    flex-grow: 1;
+    margin-right: 15px;
+    transform: scale(1.7, 1.7);
+}
+
+.displayText{
+    flex-grow: 45;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.completedAt {
+    font-style: italic;
+    font-size: .5em;
+}
+
+.removeButton {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    font-size: 15px;
+}
