@@ -10,11 +10,14 @@
     "server": "node server.js",
     "client": "node start-client.js",
     "test-integration": "./node_modules/.bin/mocha ./test/database-setup.js \"./server/**/*.i-specs.js\"",
-    "ti": "./node_modules/.bin/mocha ./test/database-setup.js \"./server/**/*.i-specs.js\" || true"
+    "ti": "./node_modules/.bin/mocha ./test/database-setup.js \"./server/**/*.i-specs.js\" || true",
+    "ta": "./node_modules/.bin/mocha \"./server/**/*.a-specs.js\" || true",
+    "test-acceptance": "./node_modules/.bin/mocha \"./server/**/*.a-specs.js\" || true"
   },
   "author": "Amy Dredge",
   "license": "ISC",
   "devDependencies": {
+    "axios": "^0.17.0",
     "chai": "^4.1.2",
     "concurrently": "^3.5.0",
     "mocha": "^3.5.3",
