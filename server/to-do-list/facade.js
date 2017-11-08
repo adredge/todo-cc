@@ -34,5 +34,9 @@ module.exports = {
 
   deleteList(userId, listId) {
     return toDoListRepository.deleteList(userId, listId)
+  },
+
+  getListsForUser(userId){
+    return toDoListRepository.getListsForUser(userId)
   }
 }

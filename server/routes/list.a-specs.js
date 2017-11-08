@@ -73,15 +73,17 @@ describe('/api', () => {
 
     context('When creating two lists for a user', () => {
       let list1, list2, updatedList1, updatedList2
+      const list1Name = "Work"
+      const list2Name = "Personal"
       const workItem1 = "Go to meeting"
       const workItem2 = "Go to another meeting"
       const personalItem1 = "Have fun"
 
       beforeEach(() => {
-        return apiPost(userId, 'createList', { name: "Work" })
+        return apiPost(userId, 'createList', { name: list1Name })
           .then(list => list1 = list)
-          .then(apiPost(userId, 'createList', { name: "Personal" })
-            .then(l => list2 = l))
+          .then(apiPost(userId, 'createList', { name: list2Name })
+            .then(list => list2 = list))
           .then(() => apiPost(userId, 'addItem', { listId: list1._id, newItemName: workItem1 }))
           .then(() => apiPost(userId, 'addItem', { listId: list1._id, newItemName: workItem2 }))
           .then(() => apiPost(userId, 'addItem', { listId: list2._id, newItemName: personalItem1 }))
@@ -97,17 +99,35 @@ describe('/api', () => {
       })
 
       it('should create the first list', () => {
-        expect(list1.name).to.equal("Work")
+        expect(list1.name).to.equal(list1Name)
       })
 
       it('should create the second list', () => {
-        expect(list2.name).to.equal("Personal")
+        expect(list2.name).to.equal(list2Name)
       })
 
       it('should save the items', () => {
         expect(updatedList1.items[0].name).to.equal(workItem1)
         expect(updatedList1.items[1].name).to.equal(workItem2)
         expect(updatedList2.items[0].name).to.equal(personalItem1)
+      })
+
+      context('when getting the users lists', () => {
+        let userLists 
+
+        beforeEach(() => {
+          return apiGet(userId, 'lists')
+          .then(l => userLists = l)
+        })
+
+        it('should include both lists', () => {
+          expect(userLists.userId).to.eql(userId)
+          expect(userLists.lists.length).to.equal(2)
+          expect(userLists.lists[0]._id).to.eql(list1._id)
+          expect(userLists.lists[0].name).to.eql(list1Name)
+          expect(userLists.lists[1]._id).to.eql(list2._id)
+          expect(userLists.lists[1].name).to.eql(list2Name)
+        })
       })
     })
   })

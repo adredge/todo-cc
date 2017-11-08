@@ -195,4 +195,30 @@ describe('to do list facade', () => {
       expect(actual).to.eql(toDoList)
     })
   })
+
+  describe('#getListsForUser', () => {
+    let actual
+    const expected = {
+      userId,
+      lists: [
+        { _id: uuid.v4(), name: "List 1" },
+        { _id: uuid.v4(), name: "List 2" }
+      ]
+    }
+
+    beforeEach(() => {
+      td.replace(toDoListRepository, 'getListsForUser')
+      td.when(toDoListRepository.getListsForUser(td.matchers.anything())).thenResolve(expected)
+
+      return toDoListFacade.getListsForUser(userId).then(l => actual = l)
+    })
+
+    it('should gets the users lists from the repository', () => {
+      td.verify(toDoListRepository.getListsForUser(userId))
+    })
+
+    it('should return the lists from the repository', () => {
+      expect(actual).to.eql(expected)
+    })
+  })
 })

@@ -13,19 +13,23 @@ describe('toDoListRepository', () => {
     userId = uuid.v4()
   })
 
-  context('when getting a users default list', () => {
-    context('when the user only has one list', () => {
-      let createdList, returnedList
 
+  context('when the user only has one list', () => {
+    let createdList, returnedList
+
+    beforeEach(() => {
+      return toDoListRepository.createEmptyList(userId, 'Default')
+        .then(l => createdList = l)
+    })
+
+    afterEach(() => {
+      return toDoListRepository.deleteList(userId, createdList._id)
+    })
+
+    context('when getting a users default list', () => {
       beforeEach(() => {
-        return toDoListRepository.createEmptyList(userId, 'Default')
-          .then(l => createdList = l)
-          .then(() => toDoListRepository.getList(userId))
+        return toDoListRepository.getList(userId)
           .then(l => returnedList = l)
-      })
-
-      afterEach(() => {
-        return toDoListRepository.deleteList(userId, createdList._id)
       })
 
       it('should return the users list', () => {
@@ -34,25 +38,51 @@ describe('toDoListRepository', () => {
       })
     })
 
-    context('when the user has multiple lists', () => {
-      let createdList1, createdList2, returnedList1, returnedList2
-      const list1Name = "List 1"
-      const list2Name = "List 2"
+    context('when getting users lists summary', () => {
+      let userLists
 
       beforeEach(() => {
-        return toDoListRepository.createEmptyList(userId, list1Name)
-          .then(l => createdList1 = l)
-          .then(() => toDoListRepository.createEmptyList(userId, list2Name))
-          .then(l => createdList2 = l)
-          .then(() => toDoListRepository.getList(userId, createdList1._id))
+        return toDoListRepository.getListsForUser(userId)
+          .then(l => userLists = l)
+      })
+
+      it('should include the user id', () => {
+        expect(userLists.userId).to.eql(userId)
+      })
+
+      it('should return just the one list', () => {
+        expect(userLists.lists.length).to.equal(1)
+        expect(userLists.lists[0]._id).to.eql(createdList._id)
+        expect(userLists.lists[0].name).to.eql(createdList.name)
+      })
+    })
+  })
+
+  context('when the user has multiple lists', () => {
+    let createdList1, createdList2
+    const list1Name = "List 1"
+    const list2Name = "List 2"
+
+    beforeEach(() => {
+      return toDoListRepository.createEmptyList(userId, list1Name)
+        .then(l => createdList1 = l)
+        .then(() => toDoListRepository.createEmptyList(userId, list2Name))
+        .then(l => createdList2 = l)
+    })
+
+    afterEach(() => {
+      return toDoListRepository.deleteList(userId, createdList1._id)
+        .then(() => toDoListRepository.deleteList(userId, createdList2._id))
+    })
+
+    context('when retrieving the individual lists', () => {
+      let returnedList1, returnedList2
+
+      beforeEach(() => {
+        return toDoListRepository.getList(userId, createdList1._id)
           .then(l => returnedList1 = l)
           .then(() => toDoListRepository.getList(userId, createdList2._id))
           .then(l => returnedList2 = l)
-      })
-
-      afterEach(() => {
-        return toDoListRepository.deleteList(userId, createdList1._id)
-          .then(() => toDoListRepository.deleteList(userId, createdList2._id))
       })
 
       it('should retrieve the first list by id', () => {
@@ -64,10 +94,39 @@ describe('toDoListRepository', () => {
         expect(returnedList2._id).to.eql(createdList2._id)
         expect(returnedList2.name).to.eql(list2Name)
       })
+    })
 
-      it('should return the first created list by default', () => {
+    context('when getting a users default list', () => {
+      let defaultList
+
+      beforeEach(() => {
         return toDoListRepository.getList(userId)
-          .then(list => expect(list._id).to.eql(createdList1._id))
+          .then(list => defaultList = list)
+      })
+
+      it('should return the first created list', () => {
+        expect(defaultList._id).to.eql(createdList1._id)
+      })
+    })
+
+    context('when getting users lists summary', () => {
+      let userLists
+
+      beforeEach(() => {
+        return toDoListRepository.getListsForUser(userId)
+          .then(l => userLists = l)
+      })
+
+      it('should include the user id', () => {
+        expect(userLists.userId).to.eql(userId)
+      })
+
+      it('should include both lists', () => {
+        expect(userLists.lists.length).to.equal(2)
+        expect(userLists.lists[0]._id).to.eql(createdList1._id)
+        expect(userLists.lists[0].name).to.eql(createdList1.name)
+        expect(userLists.lists[1]._id).to.eql(createdList2._id)
+        expect(userLists.lists[1].name).to.eql(createdList2.name)
       })
     })
   })

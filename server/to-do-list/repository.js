@@ -95,4 +95,13 @@ module.exports = {
           .then(toDoList.remove())
       })
   },
+
+  getListsForUser(userId) {
+    return ToDoList.find({ 'userId': userId }).select('_id name').exec((err, toDoList) => {
+      if (err) return console.error("ERROR!", err)
+      return toDoList
+    }).then(usersLists => {
+      return { userId: userId, lists: usersLists }
+    })
+  }
 }
