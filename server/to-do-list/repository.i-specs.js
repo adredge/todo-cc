@@ -4,13 +4,72 @@ const uuid = require('uuid')
 const mongoose = require('mongoose')
 
 const toDoListRepository = require('./repository')
-const {Item} = require('./schema')
+const { Item } = require('./schema')
 
 describe('toDoListRepository', () => {
   let userId
 
   beforeEach(() => {
     userId = uuid.v4()
+  })
+
+  context('when getting a users default list', () => {
+    context('when the user only has one list', () => {
+      let createdList, returnedList
+
+      beforeEach(() => {
+        return toDoListRepository.createEmptyList(userId, 'Default')
+          .then(l => createdList = l)
+          .then(() => toDoListRepository.getList(userId))
+          .then(l => returnedList = l)
+      })
+
+      afterEach(() => {
+        return toDoListRepository.deleteList(userId, createdList._id)
+      })
+
+      it('should return the users list', () => {
+        expect(returnedList._id).to.eql(createdList._id)
+        expect(returnedList.name).to.eql(createdList.name)
+      })
+    })
+
+    context('when the user has multiple lists', () => {
+      let createdList1, createdList2, returnedList1, returnedList2
+      const list1Name = "List 1"
+      const list2Name = "List 2"
+
+      beforeEach(() => {
+        return toDoListRepository.createEmptyList(userId, list1Name)
+          .then(l => createdList1 = l)
+          .then(() => toDoListRepository.createEmptyList(userId, list2Name))
+          .then(l => createdList2 = l)
+          .then(() => toDoListRepository.getList(userId, createdList1._id))
+          .then(l => returnedList1 = l)
+          .then(() => toDoListRepository.getList(userId, createdList2._id))
+          .then(l => returnedList2 = l)
+      })
+
+      afterEach(() => {
+        return toDoListRepository.deleteList(userId, createdList1._id)
+          .then(() => toDoListRepository.deleteList(userId, createdList2._id))
+      })
+
+      it('should retrieve the first list by id', () => {
+        expect(returnedList1._id).to.eql(createdList1._id)
+        expect(returnedList1.name).to.eql(list1Name)
+      })
+
+      it('should retrieve the second list by id', () => {
+        expect(returnedList2._id).to.eql(createdList2._id)
+        expect(returnedList2.name).to.eql(list2Name)
+      })
+
+      it('should return the first created list by default', () => {
+        return toDoListRepository.getList(userId)
+          .then(list => expect(list._id).to.eql(createdList1._id))
+      })
+    })
   })
 
   context('when creating and adding an item to a todo list', () => {
@@ -35,8 +94,8 @@ describe('toDoListRepository', () => {
     })
 
     it('should have the item', () => {
-        expect(savedList.items.length).to.equal(1)
-        expect(savedList.items[0].name).to.equal(itemName)
+      expect(savedList.items.length).to.equal(1)
+      expect(savedList.items[0].name).to.equal(itemName)
     })
   })
 
@@ -64,16 +123,16 @@ describe('toDoListRepository', () => {
       expect(savedList.items.length).to.equal(3)
     })
 
-    it('should keep the order of the items', () => { 
-        expect(savedList.items[0].name).to.equal(item1Name)
-        expect(savedList.items[1].name).to.equal(item2Name)
-        expect(savedList.items[2].name).to.equal(item3Name)
+    it('should keep the order of the items', () => {
+      expect(savedList.items[0].name).to.equal(item1Name)
+      expect(savedList.items[1].name).to.equal(item2Name)
+      expect(savedList.items[2].name).to.equal(item3Name)
     })
 
-    it('should mark items as incomplete by default', () => { 
-        expect(savedList.items[0].complete).to.be.false
-        expect(savedList.items[1].complete).to.be.false
-        expect(savedList.items[2].complete).to.be.false
+    it('should mark items as incomplete by default', () => {
+      expect(savedList.items[0].complete).to.be.false
+      expect(savedList.items[1].complete).to.be.false
+      expect(savedList.items[2].complete).to.be.false
     })
   })
 
@@ -88,13 +147,13 @@ describe('toDoListRepository', () => {
     })
 
     it('should NOT save a list', () => {
-        expect(savedList).to.eql({})
+      expect(savedList).to.eql({})
     })
 
     it('should NOT save the item', () => {
-        return Item.findOne({'name':itemName}).then(item => {
-            expect(item).to.be.null
-        })
+      return Item.findOne({ 'name': itemName }).then(item => {
+        expect(item).to.be.null
+      })
     })
   })
 
@@ -114,33 +173,33 @@ describe('toDoListRepository', () => {
         .then(r => response = r)
         .then(() => toDoListRepository.getList(userId))
         .then(l => {
-            savedList = l
-            updatedItem = savedList.items[0]
+          savedList = l
+          updatedItem = savedList.items[0]
         })
     })
 
     afterEach(() => {
-        return toDoListRepository.deleteList(userId, listId)
+      return toDoListRepository.deleteList(userId, listId)
     })
 
     it('should not return anything but should succeed', () => {
-        expect(response).to.be.undefined
+      expect(response).to.be.undefined
     })
 
     it('should update the first item', () => {
-        expect(updatedItem._id).to.eql(item1Id)
-        expect(updatedItem.name).to.eql(item1Name)
+      expect(updatedItem._id).to.eql(item1Id)
+      expect(updatedItem.name).to.eql(item1Name)
     })
 
     it('should mark the completed item as complete', () => {
-        expect(savedList.items.length).to.equal(2)
-        expect(updatedItem.complete).to.be.true
-        let actualCompletedAt = new Date(updatedItem.completedAt).toLocaleString()
-        expect(actualCompletedAt).to.equal(expectedCompletedAt)
+      expect(savedList.items.length).to.equal(2)
+      expect(updatedItem.complete).to.be.true
+      let actualCompletedAt = new Date(updatedItem.completedAt).toLocaleString()
+      expect(actualCompletedAt).to.equal(expectedCompletedAt)
     })
 
     it('should NOT mark the other item as complete', () => {
-        expect(savedList.items[1].complete).to.be.false
+      expect(savedList.items[1].complete).to.be.false
     })
   })
 
@@ -154,14 +213,14 @@ describe('toDoListRepository', () => {
     })
 
     it('should NOT save an item', () => {
-        return Item.findOne({'_id':itemId}).then(item => {
-            expect(item).to.be.null
-        })
+      return Item.findOne({ '_id': itemId }).then(item => {
+        expect(item).to.be.null
+      })
     })
 
     it('should throw an error', () => {
-        expect(error).to.exist
-        expect(error).to.contain('Unable to find item with id ' + itemId)
+      expect(error).to.exist
+      expect(error).to.contain('Unable to find item with id ' + itemId)
     })
   })
 
@@ -185,35 +244,35 @@ describe('toDoListRepository', () => {
         .then(r => response = r)
         .then(() => toDoListRepository.getList(userId))
         .then(l => {
-            savedList = l
-            updatedItem = savedList.items[1]
+          savedList = l
+          updatedItem = savedList.items[1]
         })
     })
 
     afterEach(() => {
-        return toDoListRepository.deleteList(userId, listId)
+      return toDoListRepository.deleteList(userId, listId)
     })
 
     it('should not return anything but should succeed', () => {
-        expect(response).to.be.undefined
+      expect(response).to.be.undefined
     })
 
     it('should update the item as unchecked', () => {
-        expect(savedList.items.length).to.equal(2)
-        expect(updatedItem._id).to.eql(item2Id)
-        expect(updatedItem.completedAt).to.be.null
-        expect(updatedItem.complete).to.be.false
-        expect(updatedItem.name).to.eql(item2Name)
+      expect(savedList.items.length).to.equal(2)
+      expect(updatedItem._id).to.eql(item2Id)
+      expect(updatedItem.completedAt).to.be.null
+      expect(updatedItem.complete).to.be.false
+      expect(updatedItem.name).to.eql(item2Name)
     })
 
     it('should NOT mark the other item as incomplete', () => {
-        expect(savedList.items[0]._id).to.eql(item1Id)
-        expect(savedList.items[0].complete).to.be.true
-        let returnedDate = new Date(savedList.items[0].completedAt).toLocaleString()
-        expect(returnedDate).to.equal(expectedCompletedAt1)
+      expect(savedList.items[0]._id).to.eql(item1Id)
+      expect(savedList.items[0].complete).to.be.true
+      let returnedDate = new Date(savedList.items[0].completedAt).toLocaleString()
+      expect(returnedDate).to.equal(expectedCompletedAt1)
     })
   })
-  
+
   context('when unchecking an item but the item DOES NOT exist', () => {
     let error
     const itemId = mongoose.Types.ObjectId()
@@ -224,14 +283,14 @@ describe('toDoListRepository', () => {
     })
 
     it('should NOT save an item', () => {
-        return Item.findOne({'id':itemId}).then(item => {
-            expect(item).to.be.null
-        })
+      return Item.findOne({ 'id': itemId }).then(item => {
+        expect(item).to.be.null
+      })
     })
 
     it('should throw a meaningful error', () => {
-        expect(error).to.exist
-        expect(error).to.contain('Unable to find item with id ' + itemId)
+      expect(error).to.exist
+      expect(error).to.contain('Unable to find item with id ' + itemId)
     })
   })
 
@@ -249,9 +308,9 @@ describe('toDoListRepository', () => {
         .then(list => item2Id = list.items[1]._id)
         .then(() => toDoListRepository.getList(userId))
         .then(() => toDoListRepository.removeItem(userId, listId, item1Id)
-        .then(r => response = r)
-        .then(() => toDoListRepository.getList(userId))
-        .then(list => savedList = list))
+          .then(r => response = r)
+          .then(() => toDoListRepository.getList(userId))
+          .then(list => savedList = list))
     })
 
     afterEach(() => {
@@ -259,22 +318,22 @@ describe('toDoListRepository', () => {
     })
 
     it('should not return anything but should succeed', () => {
-        expect(response).to.be.undefined
+      expect(response).to.be.undefined
     })
 
     it('should effectively remove the item from the list', () => {
-        expect(savedList.items.indexOf(item1Id)).to.equal(-1)
+      expect(savedList.items.indexOf(item1Id)).to.equal(-1)
     })
 
     it('should delete the removed item', () => {
-        return Item.findOne({'_id':item1Id}).then(item => {
-           expect(item).to.be.null
-        })
+      return Item.findOne({ '_id': item1Id }).then(item => {
+        expect(item).to.be.null
+      })
     })
 
     it('should NOT delete the other item', () => {
-        expect(savedList.items.length).to.equal(1)
-        expect(savedList.items[0]._id).to.eql(item2Id)
+      expect(savedList.items.length).to.equal(1)
+      expect(savedList.items[0]._id).to.eql(item2Id)
     })
   })
 
@@ -283,8 +342,8 @@ describe('toDoListRepository', () => {
     const itemId = mongoose.Types.ObjectId()
 
     beforeEach(() => {
-        return toDoListRepository.createEmptyList(userId, "My Test List")
-        .then(l => listId = l._id) 
+      return toDoListRepository.createEmptyList(userId, "My Test List")
+        .then(l => listId = l._id)
         .then(() => toDoListRepository.removeItem(userId, listId, itemId))
         .catch(err => error = err)
     })
@@ -294,7 +353,7 @@ describe('toDoListRepository', () => {
     })
 
     it('should NOT throw an error', () => {
-        expect(error).to.be.undefined
+      expect(error).to.be.undefined
     })
   })
 
@@ -308,7 +367,7 @@ describe('toDoListRepository', () => {
     })
 
     it('should NOT throw an error', () => {
-        expect(error).to.be.undefined
+      expect(error).to.be.undefined
     })
   })
 
@@ -316,15 +375,15 @@ describe('toDoListRepository', () => {
     let listId, list
 
     beforeEach(() => {
-        return toDoListRepository.createEmptyList(userId, "List To Delete")
-        .then(l => listId = l._id) 
+      return toDoListRepository.createEmptyList(userId, "List To Delete")
+        .then(l => listId = l._id)
         .then(() => toDoListRepository.deleteList(userId, listId))
         .then(() => toDoListRepository.getList(userId))
         .then(l => list = l)
     })
 
     it('should delete the list', () => {
-        expect(list).to.be.null
+      expect(list).to.be.null
     })
   })
 })

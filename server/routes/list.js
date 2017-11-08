@@ -7,8 +7,12 @@ router.get('/list', (req, res) => {
   return toDoListFacade.getDefaultToDoList(req.userId).then(vm => res.json(vm))
 });
 
+router.get('/list/:listId', (req, res) => {
+  return toDoListFacade.getList(req.userId, req.params.listId).then(vm => res.json(vm))
+});
+
 router.post('/createList', (req, res) => {
-  return toDoListFacade.createList(req.userId).then(vm => res.json(vm))
+  return toDoListFacade.createList(req.userId, req.body.name).then(vm => res.json(vm))
 })
 
 router.put('/checkItem', (req,res) => {

@@ -39,7 +39,7 @@ describe('/api', () => {
       })
 
       it('should create a new list', () => {
-        expect(createdList.name).to.equal("Default")
+        expect(createdList.name).to.equal('Default')
         expect(createdList.userId).to.equal(userId)
         expect(createdList._id).to.exist
       })
@@ -68,6 +68,46 @@ describe('/api', () => {
       it('should still have the other item in the list', () => {
         expect(list.items.length).to.equal(1)
         expect(list.items[0].name).to.equal(item2Name)
+      })
+    })
+
+    context('When creating two lists for a user', () => {
+      let list1, list2, updatedList1, updatedList2
+      const workItem1 = "Go to meeting"
+      const workItem2 = "Go to another meeting"
+      const personalItem1 = "Have fun"
+
+      beforeEach(() => {
+        return apiPost(userId, 'createList', { name: "Work" })
+          .then(list => list1 = list)
+          .then(apiPost(userId, 'createList', { name: "Personal" })
+            .then(l => list2 = l))
+          .then(() => apiPost(userId, 'addItem', { listId: list1._id, newItemName: workItem1 }))
+          .then(() => apiPost(userId, 'addItem', { listId: list1._id, newItemName: workItem2 }))
+          .then(() => apiPost(userId, 'addItem', { listId: list2._id, newItemName: personalItem1 }))
+          .then(() => apiGet(userId, `list/${list1._id}`)
+          .then(list => updatedList1 = list))
+          .then(() => apiGet(userId, `list/${list2._id}`)
+          .then(list => updatedList2 = list))
+      })
+
+      afterEach(() => {
+        return apiDelete(userId, `deleteList/${list1._id}`)
+          .then(() => apiDelete(userId, `deleteList/${list2._id}`))
+      })
+
+      it('should create the first list', () => {
+        expect(list1.name).to.equal("Work")
+      })
+
+      it('should create the second list', () => {
+        expect(list2.name).to.equal("Personal")
+      })
+
+      it('should save the items', () => {
+        expect(updatedList1.items[0].name).to.equal(workItem1)
+        expect(updatedList1.items[1].name).to.equal(workItem2)
+        expect(updatedList2.items[0].name).to.equal(personalItem1)
       })
     })
   })

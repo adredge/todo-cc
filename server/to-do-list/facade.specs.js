@@ -11,7 +11,7 @@ describe('to do list facade', () => {
   let userId
 
   beforeEach(() => {
-      userId = uuid.v4()
+    userId = uuid.v4()
   })
 
   describe('#getDefaultToDoList', () => {
@@ -32,6 +32,73 @@ describe('to do list facade', () => {
 
     it('should return the list', () => {
       expect(actual).to.eql(toDoList)
+    })
+  })
+
+  describe('#getDefaultToDoList', () => {
+    let actual, toDoList
+    const listId = uuid.v4()
+
+    beforeEach(() => {
+      toDoList = listTestData.build()
+
+      td.replace(toDoListRepository, 'getList')
+      td.when(toDoListRepository.getList(td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
+
+      return toDoListFacade.getList(userId, listId).then(l => actual = l)
+    })
+
+    it('should get the list from the repository', () => {
+      td.verify(toDoListRepository.getList(userId, listId))
+    })
+
+    it('should return the list', () => {
+      expect(actual).to.eql(toDoList)
+    })
+  })
+
+  describe('#createList', () => {
+    context('when creating a list without a name', () => {
+      let actual, toDoList
+
+      beforeEach(() => {
+        toDoList = listTestData.buildEmpty()
+
+        td.replace(toDoListRepository, 'createEmptyList')
+        td.when(toDoListRepository.createEmptyList(td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
+
+        return toDoListFacade.createList(userId).then(l => actual = l)
+      })
+
+      it('should call the repository with the userId and a default name', () => {
+        td.verify(toDoListRepository.createEmptyList(userId, 'Default'))
+      })
+
+      it('should return the list', () => {
+        expect(actual).to.eql(toDoList)
+      })
+    })
+
+    context('when creating a list with a name', () => {
+      let actual, toDoList
+      const listName = "This is a to do list"
+
+      beforeEach(() => {
+        toDoList = listTestData.buildEmpty()
+
+        td.replace(toDoListRepository, 'createEmptyList')
+        td.when(toDoListRepository.createEmptyList(td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
+
+        return toDoListFacade.createList(userId, listName).then(l => actual = l)
+      })
+
+      it('should call the repository with the userId and name', () => {
+        td.verify(toDoListRepository.createEmptyList(userId, listName))
+      })
+
+      it('should return the list', () => {
+        expect(actual).to.eql(toDoList)
+      })
     })
   })
 
@@ -88,7 +155,7 @@ describe('to do list facade', () => {
       toDoList = listTestData.build()
 
       listId = toDoList._id
-      const itemDetails = {listId, newItemName}
+      const itemDetails = { listId, newItemName }
 
       td.replace(toDoListRepository, 'addItem')
       td.when(toDoListRepository.addItem(td.matchers.anything(), td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
@@ -113,12 +180,11 @@ describe('to do list facade', () => {
 
       listId = toDoList._id
       itemId = toDoList.items[0]._id
-      const itemDetails = {listId, itemId}
 
       td.replace(toDoListRepository, 'removeItem')
       td.when(toDoListRepository.removeItem(td.matchers.anything(), td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
 
-      return toDoListFacade.removeItem(userId, itemDetails).then(l => actual = l)
+      return toDoListFacade.removeItem(userId, listId, itemId).then(l => actual = l)
     })
 
     it('should call the to do list repository', () => {

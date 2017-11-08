@@ -7,8 +7,13 @@ module.exports = {
     return toDoListRepository.getList(userId)
   },
 
-  createList(userId) {
-    return toDoListRepository.createEmptyList(userId, 'Default')
+  getList(userId, listId) {
+    return toDoListRepository.getList(userId, listId)
+  },
+
+  createList(userId, name) {
+    let listName = name || 'Default'
+    return toDoListRepository.createEmptyList(userId, listName)
   },
 
   checkItem(itemId, completedAt) {

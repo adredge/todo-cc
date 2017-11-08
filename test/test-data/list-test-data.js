@@ -18,5 +18,19 @@ module.exports = {
       name,
       items
     }
+  },
+
+  buildEmpty(id, listName) {
+    id = id || uuid.v4()
+
+    const userId = uuid.v4()
+    const name = listName || 'Test list ' + id 
+    
+    return {
+      _id: uuid.v4(),
+      userId,
+      name,
+      items: []
+    }
   }
 }
