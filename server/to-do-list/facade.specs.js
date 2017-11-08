@@ -11,7 +11,7 @@ describe('to do list facade', () => {
   let userId
 
   beforeEach(() => {
-      userId = uuid.v4()
+    userId = uuid.v4()
   })
 
   describe('#getDefaultToDoList', () => {
@@ -32,6 +32,29 @@ describe('to do list facade', () => {
 
     it('should return the list', () => {
       expect(actual).to.eql(toDoList)
+    })
+  })
+
+  describe('#createList', () => {
+    context('when creating a list without a name', () => {
+      let actual, toDoList
+
+      beforeEach(() => {
+        toDoList = listTestData.buildEmpty()
+
+        td.replace(toDoListRepository, 'createEmptyList')
+        td.when(toDoListRepository.createEmptyList(td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
+
+        return toDoListFacade.createList(userId).then(l => actual = l)
+      })
+
+      it('should call the repository with the userId and a default name', () => {
+        td.verify(toDoListRepository.createEmptyList(userId, 'Default'))
+      })
+
+      it('should return the list', () => {
+        expect(actual).to.eql(toDoList)
+      })
     })
   })
 
@@ -88,7 +111,7 @@ describe('to do list facade', () => {
       toDoList = listTestData.build()
 
       listId = toDoList._id
-      const itemDetails = {listId, newItemName}
+      const itemDetails = { listId, newItemName }
 
       td.replace(toDoListRepository, 'addItem')
       td.when(toDoListRepository.addItem(td.matchers.anything(), td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
@@ -113,12 +136,11 @@ describe('to do list facade', () => {
 
       listId = toDoList._id
       itemId = toDoList.items[0]._id
-      const itemDetails = {listId, itemId}
 
       td.replace(toDoListRepository, 'removeItem')
       td.when(toDoListRepository.removeItem(td.matchers.anything(), td.matchers.anything(), td.matchers.anything())).thenResolve(toDoList)
 
-      return toDoListFacade.removeItem(userId, itemDetails).then(l => actual = l)
+      return toDoListFacade.removeItem(userId, listId, itemId).then(l => actual = l)
     })
 
     it('should call the to do list repository', () => {

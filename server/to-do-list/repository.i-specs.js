@@ -13,6 +13,26 @@ describe('toDoListRepository', () => {
     userId = uuid.v4()
   })
 
+  context('when getting a users list', () => {
+    let createdList, returnedList
+
+    beforeEach(() => {
+      return toDoListRepository.createEmptyList(userId, 'Default')
+      .then(l => createdList = l)
+      .then(() => toDoListRepository.getList(userId))
+      .then(l => returnedList = l)
+    })
+
+    afterEach(() => {
+      return toDoListRepository.deleteList(userId, createdList._id)
+    })
+
+    it('should return the users list', () => {
+      expect(returnedList._id).to.eql(createdList._id)
+      expect(returnedList.name).to.eql(createdList.name)
+    })
+  })
+
   context('when creating and adding an item to a todo list', () => {
     let savedList
     const listName = "My Test List"
