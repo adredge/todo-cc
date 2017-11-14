@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Client from "./Client";
-import './to-do-list.css';
+import './to-do-list-selector.css';
+import { Link } from 'react-router-dom'
 
 class ToDoListSelector extends Component {
   constructor(props) {
@@ -15,6 +16,10 @@ class ToDoListSelector extends Component {
   }
 
   componentWillMount() {
+    this.getLists()
+  }
+
+  getLists = () => {
     Client.getLists()
       .then((userLists) => {
         this.setState({
@@ -24,32 +29,19 @@ class ToDoListSelector extends Component {
   }
 
   renderListNames = () => {
-    console.log('lists', this.state.lists)
     if (!this.state.lists || this.state.lists.length <= 0) return
-    return this.state.lists.map(list => <li key={list._id} onClick={() => this.selectList(list._id)}>{list.name}</li>)
+    return this.state.lists.map(list =>
+      <li key={list._id} className="list">
+        <Link to={`/list/${list._id}`}>{list.name}</Link>
+      </li>)
   }
-
-  selectList = (listId) => {
-    console.log("selecting list", listId)
-  }
-
-  // renderListItems = () => {
-  //   if (!this.state.list || !this.state.list.items || this.state.list.items.length === 0) return
-  //   return this.state.list.items.map(item => <ListItem key={item._id} item={item} removeItem={this.removeItem} />)
-  // }
-
-  // removeItem = (itemId) => {
-  //   Client.removeItem(this.state.list._id, itemId)
-  //     .then(() => {
-  //       this.setState({
-  //         list: { ...this.state.list, items: this.state.list.items.filter(e => e._id !== itemId) }
-  //       })
-  //     })
-  // }
 
   createList = () => {
     Client.createList(this.state.createListName)
-      .then(() => console.log('created list; redirecting to that list'))
+      .then(() => {
+        this.getLists()
+        this.setState({...this.state.lists, createListName: ""})
+      })
   }
 
   handleChange = (event) => {
@@ -66,7 +58,7 @@ class ToDoListSelector extends Component {
     return (
       <div>
         <div className="header">
-          Your Lists
+          <h2>Your Lists </h2>
         </div>
 
         <div>
@@ -75,7 +67,7 @@ class ToDoListSelector extends Component {
           </ul>
           <div className="create-list">
             <input type="text" className="create-list-input" name="create-list-input"
-              placeholder="Create new list..." value={this.state.createListName} onChange={this.handleChange} onKeyPress={this.onKeyPress} />
+              placeholder="New List Name" value={this.state.createListName} onChange={this.handleChange} onKeyPress={this.onKeyPress} />
             <button className="create-list-button" onClick={this.createList}>Create List</button>
           </div>
         </div>

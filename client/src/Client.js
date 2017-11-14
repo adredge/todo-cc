@@ -21,25 +21,26 @@ function createList(name) {
 }
 
 function addItem(listId, newItemName) {
+  console.log('ehre')
   const data = { listId, newItemName }
-  return axios.post('api/addItem', data).then(res => res.data)
+  return axios.post('/api/addItem', data).then(res => res.data)
 }
 
 function removeItem(listId, itemId) {
-  return axios.delete(`api/removeItem/${listId}/${itemId}`)
+  return axios.delete(`/api/removeItem/${listId}/${itemId}`)
 }
 
 function checkItem(itemId, completedAt) {
   const data = { itemId, completedAt }
-  return axios.put('api/checkItem', data)
+  return axios.put('/api/checkItem', data)
 }
 
 function uncheckItem(itemId) {
-  return axios.put('api/uncheckItem', { itemId })
+  return axios.put('/api/uncheckItem', { itemId })
 }
 
 function getLists() {
-  return axios.get('api/lists')
+  return axios.get('/api/lists')
     .then(res => {
       return res.data
     })
