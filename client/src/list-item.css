@@ -9,31 +9,31 @@
     height: 31px;
 }
 
-.itemContent{
+.item-content{
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-.listCheckbox {
+.list-checkbox {
     flex-grow: 1;
     margin-right: 15px;
     transform: scale(1.7, 1.7);
 }
 
-.displayText{
+.display-text{
     flex-grow: 45;
     display: flex;
     justify-content: center;
     flex-direction: column;
 }
 
-.completedAt {
+.completed-at {
     font-style: italic;
     font-size: .5em;
 }
 
-.removeButton {
+.remove-button {
     flex-grow: 1;
     background: none;
     border: none;

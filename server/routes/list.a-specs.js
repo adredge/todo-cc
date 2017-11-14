@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 const { apiGet, apiPost, apiDelete } = require('../../test/acceptance-specs-helper')
 const uuid = require('uuid')

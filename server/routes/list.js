@@ -1,3 +1,5 @@
+'use strict'
+
 const express = require('express')
 const toDoListFacade = require('../to-do-list/facade.js')
 

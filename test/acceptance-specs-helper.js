@@ -1,3 +1,5 @@
+'use strict'
+
 const axios = require('axios')
 const LocalService = require('./local-service')
 const config = require('../server/config/config')['test'];

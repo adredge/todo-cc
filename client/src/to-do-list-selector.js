@@ -1,3 +1,5 @@
+'use strict'
+
 import React, { Component } from 'react';
 import Client from "./Client";
 import './to-do-list-selector.css';

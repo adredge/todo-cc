@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 const uuid = require('uuid')
 const itemData = require('./item-test-data')

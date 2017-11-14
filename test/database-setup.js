@@ -1,4 +1,4 @@
-"use strict"
+'use strict'
 
 const env = "test"
 const config = require('../server/config/config')[env];

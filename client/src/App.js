@@ -1,3 +1,5 @@
+'use strict'
+
 import React, { Component } from 'react';
 import './App.css';
 import ToDoListSelector from './to-do-list-selector'
