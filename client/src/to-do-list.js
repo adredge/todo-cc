@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import Client from "./Client";
-import './to-do-list.css';
+import React, { Component } from 'react'
+import Client from "./Client"
+import './to-do-list.css'
 import ListItem from './list-item'
 import { Link } from 'react-router-dom'
 
 class ToDoList extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       list: {
         _id: "",
@@ -14,7 +14,7 @@ class ToDoList extends Component {
         items: []
       },
       addItemName: ""
-    };
+    }
   }
 
   componentDidMount() {
@@ -64,12 +64,12 @@ class ToDoList extends Component {
           list: list,
           addItemName: ""
         })
-      });
+      })
 
   }
 
   handleChange = (event) => {
-    this.setState({ addItemName: event.target.value });
+    this.setState({ addItemName: event.target.value })
   }
 
   onKeyPress = (e) => {
@@ -95,8 +95,8 @@ class ToDoList extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default ToDoList;
+export default ToDoList

@@ -51,7 +51,7 @@ module.exports = {
     return Item.findById(itemId).then(item => {
       if (!item) return Promise.reject('Unable to find item with id ' + itemId)
 
-      item.set({ complete: true, completedAt });
+      item.set({ complete: true, completedAt })
       return item.save().then(() => Promise.resolve()).catch(err => console.error("ERROR saving completed item", err))
     })
   },
@@ -71,7 +71,7 @@ module.exports = {
 
       const itemIndexToRemove = toDoList.items.indexOf(itemId)
       if (itemIndexToRemove > -1) {
-        toDoList.items.splice(itemIndexToRemove, 1);
+        toDoList.items.splice(itemIndexToRemove, 1)
       }
       return toDoList.save().then(() => Item.findByIdAndRemove(itemId).then(() => Promise.resolve()))
     })

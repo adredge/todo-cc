@@ -8,9 +8,9 @@ module.exports = function (config, env) {
   mongoose.Promise = global.Promise
   const db = mongoose.connection
   db.on('error', function (err) {
-    console.log('connection error...', err);
-  });
+    console.log('connection error...', err)
+  })
   db.once('open', function () {
-    console.log('connected to database.');
-  });
-};
+    console.log('connected to database.')
+  })
+}

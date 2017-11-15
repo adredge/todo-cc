@@ -4,7 +4,7 @@ const childProcess = require('child_process')
 
 module.exports = class LocalService {
     constructor(serviceFilePath) {
-        this.serviceProcess = null;
+        this.serviceProcess = null
         this.serviceFilePath = serviceFilePath
     }
 

@@ -2,7 +2,7 @@
 
 const axios = require('axios')
 const LocalService = require('./local-service')
-const config = require('../server/config/config')['test'];
+const config = require('../server/config/config')['test']
 
 const localService = new LocalService('./server.js')
 

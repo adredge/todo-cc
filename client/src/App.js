@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import './App.css';
-import Client from "./Client";
+import React, { Component } from 'react'
+import './App.css'
+import Client from "./Client"
 import ToDoListSelector from './to-do-list-selector'
 import ToDoList from './to-do-list'
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      hasAuthed: true
-    };
+      hasAuthed: false
+    }
   }
 
   componentWillMount() {
@@ -41,4 +41,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App

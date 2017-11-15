@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import Client from "./Client";
-import './list-item.css';
+import React, { Component } from 'react'
+import Client from "./Client"
+import './list-item.css'
 
 class ListItem extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       item: props.item,
       showRemoveButton: false
-    };
+    }
   }
 
   uncheckItem = () => {
@@ -37,7 +37,7 @@ class ListItem extends Component {
         Completed {new Date(item.completedAt).toLocaleString()}
       </div>)
     }
-    return;
+    return
   }
 
   showRemoveButton = () => { this.setState({ showRemoveButton: true }) }
@@ -45,7 +45,7 @@ class ListItem extends Component {
 
   render() {
 
-    const item = this.state.item;
+    const item = this.state.item
 
     return (
       <li className="item" {...this.props.children} onMouseEnter={this.showRemoveButton} onMouseLeave={this.hideRemoveButton}>
@@ -64,8 +64,8 @@ class ListItem extends Component {
           {this.state.showRemoveButton ? <button className="remove-button" onClick={() => this.props.removeItem(this.state.item._id)}>X</button> : null}
         </div>
       </li>
-    );
+    )
   }
 }
 
-export default ListItem;
+export default ListItem

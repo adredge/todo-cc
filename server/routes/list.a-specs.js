@@ -3,7 +3,7 @@
 const supertest = require('supertest')
 const app = require('../../server')
 const uuid = require('uuid')
-const config = require('../../server/config/config')['test'];
+const config = require('../../server/config/config')['test']
 
 describe('/api', () => {
   let userId

@@ -55,7 +55,7 @@ function createDefaultList(userId) {
 
 function listExistsForUser(userId) {
     return ToDoList.findOne({'userId':userId}).exec((err, toDoList) => {
-        if(err) return false;
+        if(err) return false
         return toDoList != null
     })
 }

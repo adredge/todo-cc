@@ -1,6 +1,6 @@
 'use strict'
 
-const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const config = require('../config/config')[env]
 
 module.exports = function(req, res, next) {
@@ -10,7 +10,7 @@ module.exports = function(req, res, next) {
   const userIdCookie = req.cookies[config.userCookieName]
 
   if (!userIdCookie) {
-    return res.send(401)
+    return res.sendStatus(401)
   }
 
   req.userId = userIdCookie

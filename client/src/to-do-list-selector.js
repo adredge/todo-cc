@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import Client from "./Client";
-import './to-do-list-selector.css';
+import React, { Component } from 'react'
+import Client from "./Client"
+import './to-do-list-selector.css'
 import { Link } from 'react-router-dom'
 
 class ToDoListSelector extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       lists: [{
         _id: "",
         name: ""
       }],
       createListName: ""
-    };
+    }
   }
 
   componentWillMount() {
@@ -45,7 +45,7 @@ class ToDoListSelector extends Component {
   }
 
   handleChange = (event) => {
-    this.setState({ createListName: event.target.value });
+    this.setState({ createListName: event.target.value })
   }
 
   onKeyPress = (e) => {
@@ -72,8 +72,8 @@ class ToDoListSelector extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default ToDoListSelector;
+export default ToDoListSelector

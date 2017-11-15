@@ -2,7 +2,7 @@ import axios from 'axios'
 import config from './config'
 
 function authenticateUser(){
-  return axios.post('api/auth', {userId: config.defaultUserId}).then(res => res.data)
+  return axios.post('/api/auth', {userId: config.defaultUserId}).then(res => res.data)
 }
 
 function getList(listId) {
@@ -20,7 +20,7 @@ function getList(listId) {
 function createList(name) {
   const data = {name}
 
-  return axios.post('api/createList', data).then(res => {
+  return axios.post('/api/createList', data).then(res => {
     return axios.get('/api/list').then(res => res.data)
   })
 }
@@ -51,6 +51,4 @@ function getLists() {
     })
 }
 
-
-const Client = { authenticateUser, getList, checkItem, uncheckItem, addItem, removeItem, getLists, createList };
-export default Client;
+export default { authenticateUser, getList, checkItem, uncheckItem, addItem, removeItem, getLists, createList }
