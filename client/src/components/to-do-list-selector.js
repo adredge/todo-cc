@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Client from "./Client"
+import client from '../client'
 import './to-do-list-selector.css'
 import { Link } from 'react-router-dom'
 
@@ -20,7 +20,7 @@ class ToDoListSelector extends Component {
   }
 
   getLists = () => {
-    Client.getLists()
+    client.getLists()
       .then((userLists) => {
         this.setState({
           lists: userLists.lists
@@ -37,7 +37,7 @@ class ToDoListSelector extends Component {
   }
 
   createList = () => {
-    Client.createList(this.state.createListName)
+    client.createList(this.state.createListName)
       .then(() => {
         this.getLists()
         this.setState({...this.state.lists, createListName: ""})

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Client from "./Client"
+import client from '../client'
 import './list-item.css'
 
 class ListItem extends Component {
@@ -12,7 +12,7 @@ class ListItem extends Component {
   }
 
   uncheckItem = () => {
-    Client.uncheckItem(this.state.item._id)
+    client.uncheckItem(this.state.item._id)
       .then(() => {
         this.setState({ item: { ...this.state.item, complete: false, completedAt: null } })
       })
@@ -20,7 +20,7 @@ class ListItem extends Component {
 
   checkItem = () => {
     const completedAt = new Date().toLocaleString()
-    Client.checkItem(this.state.item._id, completedAt)
+    client.checkItem(this.state.item._id, completedAt)
       .then(() => {
         this.setState({ item: { ...this.state.item, complete: true, completedAt } })
       })

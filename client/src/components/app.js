@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import './App.css'
-import Client from "./Client"
+import './app.css'
+import client from '../client'
 import ToDoListSelector from './to-do-list-selector'
 import ToDoList from './to-do-list'
 import { Switch, Route } from 'react-router-dom'
@@ -14,7 +14,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    Client.authenticateUser().then(() => {
+    client.authenticateUser().then(() => {
       this.setState({
         hasAuthed: true
       })
@@ -34,7 +34,7 @@ class App extends Component {
     }
 
     return (
-      <div className="app">
+      <div className='app'>
         {appBody}
       </div>
     )
