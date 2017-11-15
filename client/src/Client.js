@@ -1,4 +1,9 @@
 import axios from 'axios'
+import config from './config'
+
+function authenticateUser(){
+  return axios.post('api/auth', {userId: config.defaultUserId}).then(res => res.data)
+}
 
 function getList(listId) {
   let url = '/api/list'
@@ -47,5 +52,5 @@ function getLists() {
 }
 
 
-const Client = { getList, checkItem, uncheckItem, addItem, removeItem, getLists, createList };
+const Client = { authenticateUser, getList, checkItem, uncheckItem, addItem, removeItem, getLists, createList };
 export default Client;
