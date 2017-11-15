@@ -1,8 +1,8 @@
 import axios from 'axios'
 import config from './config'
 
-function authenticateUser(){
-  return axios.post('/api/auth', {userId: config.defaultUserId}).then(res => res.data)
+function authenticateUser() {
+  return axios.post('/api/auth', { userId: config.defaultUserId }).then(res => res.data)
 }
 
 function getList(listId) {
@@ -18,7 +18,7 @@ function getList(listId) {
 }
 
 function createList(name) {
-  const data = {name}
+  const data = { name }
 
   return axios.post('/api/createList', data).then(res => {
     return axios.get('/api/list').then(res => res.data)
@@ -26,7 +26,6 @@ function createList(name) {
 }
 
 function addItem(listId, newItemName) {
-  console.log('ehre')
   const data = { listId, newItemName }
   return axios.post('/api/addItem', data).then(res => res.data)
 }
@@ -45,10 +44,7 @@ function uncheckItem(itemId) {
 }
 
 function getLists() {
-  return axios.get('/api/lists')
-    .then(res => {
-      return res.data
-    })
+  return axios.get('/api/lists').then(res => res.data)
 }
 
 export default { authenticateUser, getList, checkItem, uncheckItem, addItem, removeItem, getLists, createList }

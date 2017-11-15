@@ -29,10 +29,12 @@ module.exports = {
   addItem(userId, listId, newItemName) {
     const item = new Item({ name: newItemName, complete: false })
 
-    return ToDoList.findOne({ 'userId': userId, '_id': listId }).then(toDoList => {
-      if (!toDoList) {
-        return {}
-      }
+    return ToDoList.findOne({'_id': listId }).then(toDoList => {
+      if (!toDoList) return {}
+      
+      if(toDoList.userId !== userId)
+        return Promise.reject('Unable to find the list for that user')
+      
       return item.save().then(() => {
         toDoList.items.push(item._id)
 
@@ -44,7 +46,7 @@ module.exports = {
           .catch(err => console.error("ERROR saving list with new item ref", err))
       })
         .catch(err => console.error("ERROR saving item", err))
-    }).catch(err => console.error("ERROR finding list to add item to", err))
+    })
   },
 
   checkItem(itemId, completedAt) {
