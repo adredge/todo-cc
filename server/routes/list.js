@@ -1,9 +1,17 @@
 'use strict'
 
+const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const config = require('../config/config')[env]
+
 const express = require('express')
 const toDoListFacade = require('../to-do-list/facade.js')
 
 const router = express.Router()
+
+router.post('/auth', (req, res) => {
+  res.cookie(config.userCookieName, req.body.userId, { maxAge: 900000, httpOnly: true })
+  res.send()
+})
 
 router.get('/list', (req, res) => {
   return toDoListFacade.getDefaultToDoList(req.userId).then(vm => res.json(vm))
